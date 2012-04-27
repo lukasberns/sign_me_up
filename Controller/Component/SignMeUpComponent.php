@@ -184,7 +184,7 @@ class SignMeUpComponent extends Component {
 							if (!empty($inactive_user[$model][$username_field])) {
 								$user = ' '.$inactive_user[$model][$username_field];
 							}
-							$this->Session->setFlash('Thank you'.$user.', your account is now active');
+							$this->Session->setFlash(__('Thank you%s, your account is now active', $user));
 							if ($login_after_activation === true) {
 								$this->controller->redirect($this->Auth->loginRedirect);
 							} else {
@@ -195,7 +195,7 @@ class SignMeUpComponent extends Component {
 						}
 					}
 				} else {
-					$this->Session->setFlash('Sorry, that code is incorrect.');
+					$this->Session->setFlash(__('Sorry, that code is incorrect.'));
 				}
 			}
 		}
@@ -230,7 +230,7 @@ class SignMeUpComponent extends Component {
 			$this->controller->set(compact('password'));
 			if ($this->controller->{$model}->save($user) && $this->__sendNewPassword($user[$model])) {
 				if (!$this->controller->request->is('ajax')) {
-					$this->Session->setFlash('Thank you '.$user[$model][$username_field].', your new password has been emailed to you.');
+					$this->Session->setFlash(__('Thank you %s, your new password has been emailed to you.', $user[$model][$username_field]));
 					$this->controller->redirect($this->Auth->loginAction);
 				} else {
 					return true;
@@ -258,14 +258,14 @@ class SignMeUpComponent extends Component {
 
 			if ($this->controller->{$model}->save($user) && $this->__sendForgottenPassword($user[$model])) {
 				if (!$this->controller->request->is('ajax')) {
-					$this->Session->setFlash('Thank you. A password recovery email has now been sent to '.$data['email']);
+					$this->Session->setFlash(__('Thank you. A password recovery email has now been sent to %s', $data['email']));
 					$this->controller->redirect($this->Auth->loginAction);
 				} else {
 					return true;
 				}
 			}
 		} else {
-			$this->controller->{$model}->invalidate('email', 'No user found with email: '.$data['email']);
+			$this->controller->{$model}->invalidate('email', __('No user found with email: %s', $data['email']));
 		}
 	}
 
