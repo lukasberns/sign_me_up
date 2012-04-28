@@ -180,11 +180,13 @@ class SignMeUpComponent extends Component {
 							$this->Auth->login($inactive_user);
 						}
 						if (!$this->controller->request->is('ajax')) {
-							$user = '';
 							if (!empty($inactive_user[$model][$username_field])) {
-								$user = ' '.$inactive_user[$model][$username_field];
+								$username = $inactive_user[$model][$username_field];
+								$this->Session->setFlash(__('Thank you %s, your account is now active', $username));
 							}
-							$this->Session->setFlash(__('Thank you%s, your account is now active', $user));
+							else {
+								$this->Session->setFlash(__('Thank you, your account is now active'));
+							}
 							if ($login_after_activation === true) {
 								$this->controller->redirect($this->Auth->loginRedirect);
 							} else {
@@ -230,7 +232,13 @@ class SignMeUpComponent extends Component {
 			$this->controller->set(compact('password'));
 			if ($this->controller->{$model}->save($user) && $this->__sendNewPassword($user[$model])) {
 				if (!$this->controller->request->is('ajax')) {
-					$this->Session->setFlash(__('Thank you %s, your new password has been emailed to you.', $user[$model][$username_field]));
+					if (!empty($user[$model][$username_field])) {
+						$username = $user[$model][$username_field];
+						$this->Session->setFlash(__('Thank you %s, your new password has been emailed to you.', $username));
+					}
+					else {
+						$this->Session->setFlash(__('Thank you, your new password has been emailed to you.'));
+					}
 					$this->controller->redirect($this->Auth->loginAction);
 				} else {
 					return true;
