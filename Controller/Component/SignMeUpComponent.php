@@ -158,17 +158,24 @@ class SignMeUpComponent extends Component {
 			if (!empty($this->controller->request->params[$activation_field])) {
 				$activation_code = $this->controller->request->params[$activation_field];
 			}
-
-			//If there is an activation code supplied, either in _POST or _GET
-			if (!empty($activation_code) || !empty($this->data)) {
-				$model = $this->controller->modelClass;
+			
+			$model = $this->controller->modelClass;
+			
+			if (empty($activation_code) && !empty($this->data)) {
+				$activation_code = $this->data[$model][$activation_field];
+			}
+			
+			// If there is an activation code supplied, either in _POST or _GET
+			if (!empty($activation_code)) {
 				$this->controller->loadModel($model);
-
-				if (!empty($this->data)) {
-					$activation_code = $this->data[$model][$activation_field];
-				}
-
-				$inactive_user = $this->controller->{$model}->find('first', array('conditions' => array($activation_field => $activation_code), 'recursive' => -1));
+				
+				$inactive_user = $this->controller->{$model}->find('first', array(
+					'conditions' => array(
+						$activation_field => $activation_code,
+					),
+					'recursive' => -1
+				));
+				
 				if (!empty($inactive_user)) {
 					$this->controller->{$model}->id = $inactive_user[$model][$this->controller->{$model}->primaryKey];
 					if (!empty($useractive_field)) {
