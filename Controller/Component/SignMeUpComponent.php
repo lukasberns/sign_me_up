@@ -177,7 +177,7 @@ class SignMeUpComponent extends Component {
 					if ($this->controller->{$model}->save($data)) {
 						$this->__sendWelcomeEmail($inactive_user['User']);
 						if ($login_after_activation === true) {
-							$this->Auth->login($inactive_user);
+							$this->Auth->login($inactive_user['User']);
 						}
 						if (!$this->controller->request->is('ajax')) {
 							if (!empty($inactive_user[$model][$username_field])) {
