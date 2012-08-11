@@ -256,7 +256,7 @@ class SignMeUpComponent extends Component {
 	private function __sendNewPassword($user = array()) {
 		$this->__setUpEmailParams($user);
 		if ($this->signMeUpEmailer->template($this->settings['new_password_template'], $this->settings['email_layout'])) {
-			$this->signMeUpEmailer->subject = $this->setting['new_password_subject'];
+			$this->__parseEmailSubject('new_password', $user);
 			if ($this->signMeUpEmailer->send()) {
 				return true;
 			}
@@ -286,7 +286,7 @@ class SignMeUpComponent extends Component {
 	private function __sendForgottenPassword($user = array()) {
 		$this->__setUpEmailParams($user);
 		if ($this->signMeUpEmailer->template($this->settings['password_reset_template'], $this->settings['email_layout'])) {
-			$this->signMeUpEmailer->subject = $this->settings['password_reset_subject'];
+			$this->__parseEmailSubject('password_reset', $user);
 			if ($this->signMeUpEmailer->send()) {
 				return true;
 			}
