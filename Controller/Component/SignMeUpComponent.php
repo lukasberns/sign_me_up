@@ -67,13 +67,11 @@ class SignMeUpComponent extends Component {
 		foreach ($matches[1] as $match) {
 			if (!empty($user[$match])) {
 				$foundMatch = true;
-				$this->signMeUpEmailer->subject(str_replace('%'.$match.'%', $user[$match], $subject));
+				$subject = str_replace('%'.$match.'%', $user[$match], $subject);
 			}
 		}
-
-		if ($foundMatch === false) {
-			$this->signMeUpEmailer->subject($subject);
-		}
+		
+		$this->signMeUpEmailer->subject($subject);
 	}
 
 	public function register() {
