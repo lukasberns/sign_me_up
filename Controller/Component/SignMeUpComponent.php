@@ -89,7 +89,7 @@ class SignMeUpComponent extends Component {
 			}
 
 			if ($this->controller->{$model}->validates()) {
-
+				
 				if (!empty($activation_field)) {
 					$this->data[$model][$activation_field] = $this->controller->{$model}->generateActivationCode($this->data);
 				} elseif (!empty($useractive_field)) {
