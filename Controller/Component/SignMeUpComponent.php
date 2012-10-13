@@ -194,7 +194,7 @@ class SignMeUpComponent extends Component {
 								$this->Session->setFlash(__('Thank you, your account is now active'));
 							}
 							if ($login_after_activation === true) {
-								$this->controller->redirect($this->Auth->loginRedirect);
+								$this->controller->redirect($this->Auth->redirect());
 							} else {
 								$this->controller->redirect($this->Auth->loginAction);
 							}
