@@ -68,6 +68,7 @@ Next up the plugin requires that you have a config file in 'app/Config/email.php
 		'activation_field' => 'activation_code',
 		'useractive_field' => 'active',
 		'login_after_activation' => false,
+		'change_password_url' => null,
 		'welcome_subject' => 'Welcome',
 		'activation_subject' => 'Please Activate Your Account',
 		'password_reset_field' => 'password_reset',

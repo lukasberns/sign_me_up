@@ -10,6 +10,7 @@ class SignMeUpComponent extends Component {
 		'activation_field' => 'activation_code',
 		'useractive_field' => 'active',
 		'login_after_activation' => false,
+		'change_password_url' => null, // automatically logs in with pw reset mail
 		'welcome_subject' => 'Welcome',
 		'activation_subject' => 'Please Activate Your Account',
 		'password_reset_field' => 'password_reset',
@@ -232,24 +233,39 @@ class SignMeUpComponent extends Component {
 		));
 
 		if (!empty($user)) {
-			$password = substr(Security::hash(String::uuid(), null, true), 0, 8);
-			$user[$model][$password_field] = Security::hash($password, null, true);
-			$user[$model][$password_reset_field] = null;
-			$this->signMeUpEmailer->viewVars(compact('password'));
-			if ($this->controller->{$model}->save($user) && $this->__sendNewPassword($user[$model])) {
-				if (!$this->controller->request->is('ajax')) {
-					if (!empty($user[$model][$username_field])) {
-						$username = $user[$model][$username_field];
-						$this->Session->setFlash(__('Thank you %s, your new password has been emailed to you.', $username));
-					}
-					else {
-						$this->Session->setFlash(__('Thank you, your new password has been emailed to you.'));
-					}
-					$this->controller->redirect($this->Auth->loginAction);
-				} else {
-					return true;
+			$user[$model][$password_reset_field] = null; // delete one time token
+			
+			if ($change_password_url) {
+				if ($this->controller->{$model}->save($user)) {
+					$this->Auth->login($user[$model]);
+					$this->controller->redirect($change_password_url);
+				}
+				else {
+					throw new InternalErrorException(__('Unknown error. Please try again.'));
 				}
 			}
+			else {
+				$password = substr(Security::hash(String::uuid(), null, true), 0, 8);
+				$user[$model][$password_field] = Security::hash($password, null, true);
+				$this->signMeUpEmailer->viewVars(compact('password'));
+				if ($this->controller->{$model}->save($user) && $this->__sendNewPassword($user[$model])) {
+					if (!$this->controller->request->is('ajax')) {
+						if (!empty($user[$model][$username_field])) {
+							$username = $user[$model][$username_field];
+							$this->Session->setFlash(__('Thank you %s, your new password has been emailed to you.', $username));
+						}
+						else {
+							$this->Session->setFlash(__('Thank you, your new password has been emailed to you.'));
+						}
+						$this->controller->redirect($this->Auth->loginAction);
+					} else {
+						return true;
+					}
+				}
+			}
+		}
+		else {
+			$this->Session->setFlash(__('Sorry, your token has expired. Please try again.'));
 		}
 	}
 
