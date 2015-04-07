@@ -2,38 +2,42 @@
 
 class SignMeUpBehavior extends ModelBehavior {
 
-	public $validate = array(
-		'username' => array(
-			'pattern' => array(
-				'rule' => array('custom','/[a-zA-Z0-9\_\-]{4,30}$/i'),
-				'message'=> 'Usernames must be 4 characters or longer with no spaces.'
+	public $validate;
+	
+	public function __construct() {
+		$this->validate = array(
+			'username' => array(
+				'pattern' => array(
+					'rule' => array('custom','/[a-zA-Z0-9\_\-]{4,30}$/i'),
+					'message'=> __('Usernames must be 4 characters or longer with no spaces.')
+				),
+				'usernameExists' => array(
+					'rule' => 'isUnique',
+					'message' => __('Sorry, this username already exists')
+				),
 			),
-			'usernameExists' => array(
-				'rule' => 'isUnique',
-				'message' => 'Sorry, this username already exists'
+			'email' => array(
+				'validEmail' => array(
+					'rule' => array('email', true),
+					'message' => __('Please supply a valid & active email address')
+				),
+				'emailExists' => array(
+					'rule' => 'isUnique',
+					'message' => __('Sorry, this email address is already in use')
+				),
 			),
-		),
-		'email' => array(
-			'validEmail' => array(
-				'rule' => array('email', true),
-				'message' => 'Please supply a valid & active email address'
+			'password1' => array(
+				'minRequirements' => array(
+					'rule' => array('minLength', 6),
+					'message' => __('Passwords need to be at least %d characters long')
+				),
+				'match' => array(
+					'rule' => array('confirmPassword', 'password1', 'password2'),
+					'message' => __('Passwords do not match')
+				),
 			),
-			'emailExists' => array(
-				'rule' => 'isUnique',
-				'message' => 'Sorry, this email address is already in use'
-			),
-		),
-		'password1' => array(
-			'minRequirements' => array(
-				'rule' => array('minLength', 6),
-				'message' => 'Passwords need to be at least 6 characters long'
-			),
-			'match' => array(
-				'rule' => array('confirmPassword', 'password1', 'password2'),
-				'message' => 'Passwords do not match'
-			),
-		),
-	);
+		);
+	}
 
 	public function beforeValidate(&$Model) {
 		$this->model = $Model;
