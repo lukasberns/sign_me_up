@@ -39,7 +39,7 @@ class SignMeUpComponent extends Component {
 		$this->settings = array_merge($this->defaults, $settings);
 		$this->requestHandler = new CakeRequest();
 		$this->signMeUpEmailer = new CakeEmail('signMeUp');
-		$this->data = $this->requestHandler->data(null);
+		$this->data = $this->requestHandler->data;
 		$this->controller = $controller;
 	}
 
