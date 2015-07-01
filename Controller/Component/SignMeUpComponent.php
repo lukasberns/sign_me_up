@@ -246,7 +246,7 @@ class SignMeUpComponent extends Component {
 			}
 			else {
 				$password = substr(Security::hash(String::uuid(), null, true), 0, 8);
-				$user[$model][$password_field] = Security::hash($password, null, true);
+				$user[$model][$password_field] = $password; // the User model will hash the password for us
 				$this->signMeUpEmailer->viewVars(compact('password'));
 				if ($this->controller->{$model}->save($user) && $this->__sendNewPassword($user[$model])) {
 					if (!$this->controller->request->is('ajax')) {
